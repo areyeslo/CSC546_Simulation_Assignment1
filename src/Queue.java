@@ -1,3 +1,5 @@
+//Modified for LIFO
+
 // package osl.util;
 // import java.io.*;
 
@@ -74,6 +76,13 @@ public class Queue {
       System.arraycopy(theQ, 0, newQ, theQ.length, back);
       back = front + theQ.length - 1;
     }
+   /* if (back >= front)
+        System.arraycopy(theQ, back, newQ, back, back - front + 1);
+      else {
+        System.arraycopy(theQ, front, newQ, front, theQ.length - front);
+        System.arraycopy(theQ, 0, newQ, theQ.length, back);
+        back = front + theQ.length - 1;
+    }*/
 
     theQ = newQ;
   }
@@ -97,9 +106,12 @@ public class Queue {
   synchronized public void enqueue(Object q) {
     if (((back + 1) % theQ.length) == front)
       grow();
-      
+        
     theQ[back] = q;
     back = (back + 1) % theQ.length;
+    
+    /*theQ[front] = q; //Added by Arturo R
+    front = (front +1) % theQ.length; // Added by Arturo R*/
   }
 
   /**
@@ -111,12 +123,19 @@ public class Queue {
     */
   synchronized public Object dequeue() {
     Object toReturn = null;
-
-    if (!empty()) {
-      toReturn = theQ[front];
-      front = (front + 1) % theQ.length;
-    }
-
+       //LIFO
+       if (!empty()) {
+    	   toReturn = theQ[back - 1]; //Added by Arturo R
+    	   back = (back-1) % theQ.length;
+       }
+    
+       //FIFO
+       /*if (!empty()) {
+    	   toReturn = theQ[front];
+    	   front = (front + 1) % theQ.length;
+       }*/
+    
+      
     return toReturn;
   }
 
@@ -252,5 +271,6 @@ public class Queue {
     return returnVal;
   }
 }
+
 
 
